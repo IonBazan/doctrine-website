@@ -31,9 +31,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
+use function assert;
 use function date_default_timezone_set;
 use function file_exists;
 use function getenv;
+use function is_string;
 use function realpath;
 use function sprintf;
 
@@ -152,7 +154,9 @@ class Application
 
         $yamlConfigLoader->load(sprintf('config_%s.yml', $env));
 
-        if (file_exists($container->getParameter('doctrine.website.config_dir') . '/local.yml')) {
+        $configDir = $container->getParameter('doctrine.website.config_dir');
+        assert(is_string($configDir));
+        if (file_exists($configDir . '/local.yml')) {
             $yamlConfigLoader->load('local.yml');
         }
 
@@ -165,7 +169,9 @@ class Application
 
         $container->compile();
 
-        Stripe\Stripe::setApiKey($container->getParameter('doctrine.website.stripe.secret_key'));
+        $apiKey = $container->getParameter('doctrine.website.stripe.secret_key');
+        assert(is_string($apiKey));
+        Stripe\Stripe::setApiKey($apiKey);
 
         date_default_timezone_set('America/New_York');
 

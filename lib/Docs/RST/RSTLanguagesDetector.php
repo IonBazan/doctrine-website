@@ -50,7 +50,7 @@ class RSTLanguagesDetector
             return $file->getRealPath();
         }, iterator_to_array($finder)));
 
-        $languageCodes = array_map(static function (string $file) {
+        $languageCodes = array_map(static function (string $file): string {
             $e = explode('/', $file);
 
             return end($e);
